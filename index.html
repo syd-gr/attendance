@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Management System</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    tfoot {
+        font-weight: bold;
+    }
+
+    /* Print-specific styles */
+    @media print {
+        /* Hide entire columns for Holiday and Same as Above */
+        th:nth-child(3), td:nth-child(3),
+        th:nth-child(5), td:nth-child(5) {
+            display: none;
+        }
+    }
+</style>
+
+
+</head>
+<body>
+    <h2>Attendance Management System</h2>
+    <label>Name: <input type="text" id="name"></label>
+    <label>Company Name: 
+        <select id="company">
+            <option value="Work-Change">Work-Change</option>
+            <option value="Centurion-Facilities">Centurion-Facilities</option>
+            <option value="H & S Partners">H & S Partners</option>
+            <option value="Joining Job">Joining Job</option>
+            <option value="Desti Japan">Desti Japan</option>
+        </select>
+    </label>
+    <label>Month: 
+        <select id="month" onchange="populateTable()">
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+        </select>
+    </label>
+    <label>Year: <input type="number" id="year" value="2025" min="2000" max="2100" onchange="populateTable()"></label>
+    <button onclick="populateTable()">Generate</button>
+    <button onclick="window.print()">Print</button>
+    
+    <table id="attendanceTable">
+        <thead>
+    <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>Holiday</th>
+        <th>Work Start Time</th>
+        <th>Same as Above</th>
+        <th>Work End Time</th>
+        <th>Break Time (Auto 1hr, Editable)</th>
+        <th>Overtime</th>
+        <th>Total Working Time</th>
+        <th>残業</th>
+        <th>欠勤</th>
+        <th>遅刻</th>
+        <th>早退</th>
+        <th>有給</th>
+        <th>出張</th>
+        <th>事由</th>
+        <th>確認印（サイン）</th>
+    </tr>
+</thead>
+<tbody>
+    <!-- Table rows here will be automatically handled -->
+</tbody>
+
+
+        <tfoot>
+            <tr>
+                <td colspan="6">Total Working Days:<span id="totalWorkingDays">0</span></td>
+                <td id="totalBreakTime">0</td>
+                <td id="totalOvertime">0</td>
+                <td id="totalWorkingTime">0</td>
+            </tr>
+        </tfoot>
+    </table>
+    <h3><span id="totalWorkingDays"></span></h3>
+
+    <script>
+        function populateTable() {
+            let tableBody = document.querySelector("#attendanceTable tbody");
+            tableBody.innerHTML = "";
+            let selectedMonth = parseInt(document.getElementById("month").value);
+            let selectedYear = parseInt(document.getElementById("year").value);
+            let monthDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+            
+            for (let i = 1; i <= monthDays; i++) {
+                let row = document.createElement("tr");
+                let date = new Date(selectedYear, selectedMonth, i);
+                let dateString = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                let dayString = date.toLocaleDateString('en-US', { weekday: 'long' });
+                
+                row.innerHTML = `
+                    <td>${dateString}</td>
+                    <td>${dayString}</td>
+                    <td><input type="checkbox" class="holidayCheckbox" onchange="toggleHoliday(this)"></td>
+                    <td><input type="time" class="startTime" onchange="calculateTime(this)"></td>
+                    <td><input type="checkbox" class="sameAsAbove" onchange="copyPreviousRow(this)"></td>
+                    <td><input type="time" class="endTime" onchange="calculateTime(this)"></td>
+                    <td><input type="number" class="breakTime" value="1" min="0" step="0.5" onchange="calculateTime(this)"></td>
+                    <td class="overtime">0</td>
+                    <td class="totalWorkingTime">0</td>
+                    <td><input type="checkbox" class="overtimeCheckbox"></td>
+                    <td><input type="checkbox" class="absenceCheckbox"></td>
+                    <td><input type="checkbox" class="latenessCheckbox"></td>
+                    <td><input type="checkbox" class="earlyLeaveCheckbox"></td>
+                    <td><input type="checkbox" class="paidLeaveCheckbox"></td>
+                    <td><input type="checkbox" class="businessTripCheckbox"></td>
+                    <td><input type="text" class="reasonText"></td>
+                    <td><input type="checkbox" class="signatureCheckbox"></td>
+                `;
+                tableBody.appendChild(row);
+            }
+            updateWorkingDays();
+        }
+
+        function toggleHoliday(checkbox) {
+            let row = checkbox.parentElement.parentElement;
+            let inputs = row.querySelectorAll("input[type='time'], input[type='number']");
+            let overtimeCell = row.querySelector(".overtime");
+            let workingTimeCell = row.querySelector(".totalWorkingTime");
+            let breakTimeInput = row.querySelector(".breakTime");
+
+            if (checkbox.checked) {
+                inputs.forEach(input => input.disabled = true);
+                breakTimeInput.value = "";
+                overtimeCell.textContent = "-";
+                workingTimeCell.textContent = "-";
+            } else {
+                inputs.forEach(input => input.disabled = false);
+                breakTimeInput.value = "1";
+                calculateTime(row.querySelector(".startTime"));
+            }
+            updateWorkingDays();
+        }
+
+        function updateWorkingDays() {
+            let totalDays = document.querySelectorAll(".holidayCheckbox").length;
+            let holidays = document.querySelectorAll(".holidayCheckbox:checked").length;
+            document.getElementById("totalWorkingDays").textContent = totalDays - holidays;
+        }
+
+        function calculateTime(input) {
+            let row = input.parentElement.parentElement;
+            let startTimeInput = row.querySelector(".startTime");
+            let endTimeInput = row.querySelector(".endTime");
+            let breakTimeInput = row.querySelector(".breakTime");
+            let overtimeCell = row.querySelector(".overtime");
+            let workingTimeCell = row.querySelector(".totalWorkingTime");
+
+            // If holiday is checked, no calculations
+            if (row.querySelector(".holidayCheckbox").checked) {
+                overtimeCell.textContent = "-";
+                workingTimeCell.textContent = "-";
+                return;
+            }
+
+            let startTime = startTimeInput.value;
+            let endTime = endTimeInput.value;
+            let breakTime = parseFloat(breakTimeInput.value) || 0;
+
+            if (startTime && endTime) {
+                let start = new Date(`1970-01-01T${startTime}:00Z`);
+                let end = new Date(`1970-01-01T${endTime}:00Z`);
+                let totalWorkingMinutes = (end - start) / 60000 - breakTime * 60;
+
+                if (totalWorkingMinutes < 0) {
+                    totalWorkingMinutes += 24 * 60;  // Account for crossing midnight
+                }
+
+                let totalWorkingTime = (totalWorkingMinutes / 60).toFixed(2);
+                workingTimeCell.textContent = totalWorkingTime;
+
+                let overtime = Math.max(0, totalWorkingMinutes - 480) / 60; // 8 hours = 480 minutes
+                overtimeCell.textContent = overtime.toFixed(2);
+            } else {
+                overtimeCell.textContent = "-";
+                workingTimeCell.textContent = "-";
+            }
+
+            updateTotals();
+        }
+
+        function updateTotals() {
+            let breakTimeCells = document.querySelectorAll(".breakTime");
+            let overtimeCells = document.querySelectorAll(".overtime");
+            let workingTimeCells = document.querySelectorAll(".totalWorkingTime");
+
+            let totalBreakTime = 0;
+            let totalOvertime = 0;
+            let totalWorkingTime = 0;
+
+            breakTimeCells.forEach(cell => {
+                if (!cell.disabled) {
+                    totalBreakTime += parseFloat(cell.value) || 0;
+                }
+            });
+
+            overtimeCells.forEach(cell => {
+                if (cell.textContent !== "-") {
+                    totalOvertime += parseFloat(cell.textContent) || 0;
+                }
+            });
+
+            workingTimeCells.forEach(cell => {
+                if (cell.textContent !== "-") {
+                    totalWorkingTime += parseFloat(cell.textContent) || 0;
+                }
+            });
+
+            document.getElementById("totalBreakTime").textContent = totalBreakTime.toFixed(2);
+            document.getElementById("totalOvertime").textContent = totalOvertime.toFixed(2);
+            document.getElementById("totalWorkingTime").textContent = totalWorkingTime.toFixed(2);
+        }
+
+        function copyPreviousRow(checkbox) {
+            let row = checkbox.parentElement.parentElement;
+            let prevRow = row.previousElementSibling;
+            if (!prevRow) return;
+            
+            let prevStart = prevRow.querySelector(".startTime").value;
+            let prevEnd = prevRow.querySelector(".endTime").value;
+            let prevBreak = prevRow.querySelector(".breakTime").value;
+            
+            row.querySelector(".startTime").value = prevStart;
+            row.querySelector(".endTime").value = prevEnd;
+            row.querySelector(".breakTime").value = prevBreak;
+            calculateTime(row.querySelector(".startTime"));
+        }
+    </script>
+</body>
+</html>
