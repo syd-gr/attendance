@@ -3,262 +3,614 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Management System</title>
+    <title>🎂 Happy Birthday!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    th, td {
-        border: 1px solid black;
-        padding: 8px;
-        text-align: center;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
-    tfoot {
-        font-weight: bold;
-    }
-
-    /* Print-specific styles */
-    @media print {
-        /* Hide entire columns for Holiday and Same as Above */
-        th:nth-child(3), td:nth-child(3),
-        th:nth-child(5), td:nth-child(5) {
-            display: none;
+        :root {
+            --primary: #ff6b6b;
+            --accent: #4ecdc4;
+            --paper: #fdf5e6;
+            --dark: #555;
         }
-    }
-</style>
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Comic Sans MS', cursive, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #fff8e1, #ffe0b2);
+        }
+
+        /* Sparkle Canvas */
+        #sparkle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* ===== Intro Screen ===== */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1511739001183-379328b2a7a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 2000;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        #intro-screen h1 {
+            color: white;
+            font-size: 3.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
+        }
+
+        #intro-screen p {
+            color: #fffde7;
+            font-size: 1.8rem;
+            max-width: 700px;
+            margin-bottom: 40px;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        #start-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        #start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+            background: #ff5252;
+        }
+
+        /* ===== Main Content ===== */
+        #main-content {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        #main-content.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .header {
+            text-align: center;
+            margin: 30px auto 30px;
+            max-width: 800px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            color: var(--primary);
+            text-shadow: 3px 3px 0 #ffd54f, 6px 6px 0 rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        .header p {
+            font-size: 1.4rem;
+            color: var(--dark);
+            margin-bottom: 25px;
+        }
+
+        .music-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .music-toggle:hover { transform: scale(1.05); }
+
+        /* ===== Cake with Candle ===== */
+        .cake-container {
+            text-align: center;
+            margin: 30px auto;
+            position: relative;
+            max-width: 400px;
+        }
+
+        .cake {
+            width: 100%;
+            height: auto;
+            max-width: 300px;
+        }
+
+        .flame {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            width: 20px;
+            height: 30px;
+            background: radial-gradient(circle, #ffeb3b, #ff5722);
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 0 15px #ff5722, 0 0 30px #ff9800;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .flame.lit {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+            animation: flicker 0.8s infinite alternate;
+        }
+
+        #wish-instruction {
+            margin-top: 15px;
+            font-style: italic;
+            color: #777;
+            font-size: 1.2rem;
+        }
+
+        .blow-btn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+        .blow-btn.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .blow-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        /* ===== Confetti Canvas ===== */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Rest of your styles (gallery, time-capsule, etc.) stay the same */
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 35px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 15px 15px 45px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transform: rotate(var(--angle, 0deg));
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border: 1px solid #eee;
+            position: relative;
+            overflow: hidden;
+            min-width: 220px;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            border-radius: 4px;
+        }
+
+        .caption {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: var(--dark);
+            font-weight: bold;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.08);
+            z-index: 20;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+        }
+
+        .hidden-message {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            text-align: center;
+            font-size: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+        .polaroid.clicked .hidden-message {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .time-capsule {
+            max-width: 700px;
+            margin: 80px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-capsule::before {
+            content: '🕰️';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+        }
+
+        .time-capsule h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .time-capsule p {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: var(--dark);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 1.2rem;
+            color: var(--dark);
+            padding-bottom: 30px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.8; transform: translateX(-52%) scale(0.95); }
+        }
+
+        @media (max-width: 768px) {
+            #intro-screen h1 { font-size: 2.4rem; }
+            .header h1 { font-size: 2.5rem; }
+            .cake { max-width: 250px; }
+        }
+    </style>
 </head>
 <body>
-    <h2>Attendance Management System</h2>
-    <label>Name: <input type="text" id="name"></label>
-    <label>Company Name: 
-        <select id="company">
-            <option value="Work-Change">Work-Change</option>
-            <option value="Centurion-Facilities">Centurion-Facilities</option>
-            <option value="H & S Partners">H & S Partners</option>
-            <option value="Joining Job">Joining Job</option>
-            <option value="Desti Japan">Desti Japan</option>
-        </select>
-    </label>
-    <label>Month: 
-        <select id="month" onchange="populateTable()">
-            <option value="0">January</option>
-            <option value="1">February</option>
-            <option value="2">March</option>
-            <option value="3">April</option>
-            <option value="4">May</option>
-            <option value="5">June</option>
-            <option value="6">July</option>
-            <option value="7">August</option>
-            <option value="8">September</option>
-            <option value="9">October</option>
-            <option value="10">November</option>
-            <option value="11">December</option>
-        </select>
-    </label>
-    <label>Year: <input type="number" id="year" value="2025" min="2000" max="2100" onchange="populateTable()"></label>
-    <button onclick="populateTable()">Generate</button>
-    <button onclick="window.print()">Print</button>
-    
-    <table id="attendanceTable">
-        <thead>
-    <tr>
-        <th>Date</th>
-        <th>Day</th>
-        <th>Holiday</th>
-        <th>Work Start Time</th>
-        <th>Same as Above</th>
-        <th>Work End Time</th>
-        <th>Break Time (Auto 1hr, Editable)</th>
-        <th>Overtime</th>
-        <th>Total Working Time</th>
-        <th>残業</th>
-        <th>欠勤</th>
-        <th>遅刻</th>
-        <th>早退</th>
-        <th>有給</th>
-        <th>出張</th>
-        <th>事由</th>
-        <th>確認印（サイン）</th>
-    </tr>
-</thead>
-<tbody>
-    <!-- Table rows here will be automatically handled -->
-</tbody>
+    <!-- Sparkle Canvas (always on top) -->
+    <canvas id="sparkle-canvas"></canvas>
 
+    <!-- Intro Screen -->
+    <div id="intro-screen">
+        <h1>🎂 A Birthday Surprise Awaits...</h1>
+        <p>Are you ready to explore some of my favorite moments with you?</p>
+        <button id="start-btn">✨ Start Exploring</button>
+    </div>
 
-        <tfoot>
-            <tr>
-                <td colspan="6">Total Working Days:<span id="totalWorkingDays">0</span></td>
-                <td id="totalBreakTime">0</td>
-                <td id="totalOvertime">0</td>
-                <td id="totalWorkingTime">0</td>
-            </tr>
-        </tfoot>
-    </table>
-    <h3><span id="totalWorkingDays"></span></h3>
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <div class="header">
+            <h1>Happy Birthday!</h1>
+            <p>A little digital hug & a collection of moments I treasure.</p>
+            <div class="music-toggle" id="musicToggle">
+                <i class="fas fa-music"></i> <span>Play Song</span>
+            </div>
+        </div>
+
+        <!-- Cake with Candle -->
+        <div class="cake-container">
+            <!-- Simple SVG Cake -->
+            <svg class="cake" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                <!-- Plate -->
+                <ellipse cx="100" cy="110" rx="90" ry="10" fill="#ccc"/>
+                <!-- Cake layers -->
+                <rect x="40" y="40" width="120" height="20" fill="#f8bbd0"/>
+                <rect x="45" y="60" width="110" height="20" fill="#e91e63"/>
+                <rect x="50" y="80" width="100" height="20" fill="#ad1457"/>
+                <!-- Frosting swirls -->
+                <circle cx="60" cy="35" r="8" fill="#fff"/>
+                <circle cx="100" cy="35" r="8" fill="#fff"/>
+                <circle cx="140" cy="35" r="8" fill="#fff"/>
+            </svg>
+            <div class="flame" id="flame"></div>
+            <p id="wish-instruction">🕯️ Click the flame to light your birthday candle!</p>
+            <button class="blow-btn" id="blowBtn">💨 Blow Out Candle</button>
+        </div>
+
+        <!-- Rest of your content -->
+        <div class="gallery">
+            <div class="polaroid" style="--angle: -5deg;" data-message="Remember this? You laughed so hard you cried! 😂">
+                <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=600&h=800&q=80" alt="Memory 1">
+                <p class="caption">The best day ever!</p>
+                <div class="hidden-message"></div>
+            </div>
+            <div class="polaroid" style="--angle: 3deg;" data-message="You said 'Let’s just go!' — best decision ever. 🌍">
+                <img src="https://images.unsplash.com/photo-1476820865390-c52aeebb9891?auto=format&fit=crop&w=600&h=800&q=80" alt="Memory 2">
+                <p class="caption">Adventure awaits.</p>
+                <div class="hidden-message"></div>
+            </div>
+            <div class="polaroid" style="--angle: -2deg;" data-message="This smile? My favorite thing. ✨">
+                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&h=800&q=80" alt="Memory 3">
+                <p class="caption">Always laughing.</p>
+                <div class="hidden-message"></div>
+            </div>
+            <div class="polaroid" style="--angle: 6deg;" data-message="2024: Our year of inside jokes & midnight snacks. 🍕">
+                <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=600&h=800&q=80" alt="Memory 4">
+                <p class="caption">2024 Highlights.</p>
+                <div class="hidden-message"></div>
+            </div>
+        </div>
+
+        <div class="time-capsule">
+            <h2>A Note From the Heart</h2>
+            <p>
+                Dear You,<br><br>
+                Right now, as you read this, I want you to know: you are deeply loved — not just today, but every ordinary Tuesday, every stormy day, every quiet moment.<br><br>
+                May this year bring you courage to chase joy, rest when you need it, and people who <em>see</em> you.<br><br>
+                With all my heart,<br>
+                — Someone who’s really glad you were born 🌟
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>Made with 🎂, confetti, and way too much love.</p>
+        </div>
+    </div>
+
+    <!-- Royalty-Free Birthday Song -->
+    <audio id="birthdaySong" preload="metadata">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-happy-birthday-to-you-513.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <script>
-        function populateTable() {
-            let tableBody = document.querySelector("#attendanceTable tbody");
-            tableBody.innerHTML = "";
-            let selectedMonth = parseInt(document.getElementById("month").value);
-            let selectedYear = parseInt(document.getElementById("year").value);
-            let monthDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-            
-            for (let i = 1; i <= monthDays; i++) {
-                let row = document.createElement("tr");
-                let date = new Date(selectedYear, selectedMonth, i);
-                let dateString = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                let dayString = date.toLocaleDateString('en-US', { weekday: 'long' });
-                
-                row.innerHTML = `
-                    <td>${dateString}</td>
-                    <td>${dayString}</td>
-                    <td><input type="checkbox" class="holidayCheckbox" onchange="toggleHoliday(this)"></td>
-                    <td><input type="time" class="startTime" onchange="calculateTime(this)"></td>
-                    <td><input type="checkbox" class="sameAsAbove" onchange="copyPreviousRow(this)"></td>
-                    <td><input type="time" class="endTime" onchange="calculateTime(this)"></td>
-                    <td><input type="number" class="breakTime" value="1" min="0" step="0.5" onchange="calculateTime(this)"></td>
-                    <td class="overtime">0</td>
-                    <td class="totalWorkingTime">0</td>
-                    <td><input type="checkbox" class="overtimeCheckbox"></td>
-                    <td><input type="checkbox" class="absenceCheckbox"></td>
-                    <td><input type="checkbox" class="latenessCheckbox"></td>
-                    <td><input type="checkbox" class="earlyLeaveCheckbox"></td>
-                    <td><input type="checkbox" class="paidLeaveCheckbox"></td>
-                    <td><input type="checkbox" class="businessTripCheckbox"></td>
-                    <td><input type="text" class="reasonText"></td>
-                    <td><input type="checkbox" class="signatureCheckbox"></td>
-                `;
-                tableBody.appendChild(row);
+        // ===== Sparkling Particles (Falling from Top) =====
+        const sparkleCanvas = document.getElementById('sparkle-canvas');
+        const sparkleCtx = sparkleCanvas.getContext('2d');
+        sparkleCanvas.width = window.innerWidth;
+        sparkleCanvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            sparkleCanvas.width = window.innerWidth;
+            sparkleCanvas.height = window.innerHeight;
+        });
+
+        const sparkles = [];
+        const sparkleColors = ['#ffeb3b', '#ffd54f', '#ffca28', '#fff176'];
+
+        class Sparkle {
+            constructor() {
+                this.x = Math.random() * sparkleCanvas.width;
+                this.y = Math.random() * -sparkleCanvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speed = Math.random() * 1 + 0.5;
+                this.opacity = Math.random() * 0.7 + 0.3;
+                this.color = sparkleColors[Math.floor(Math.random() * sparkleColors.length)];
             }
-            updateWorkingDays();
+            update() {
+                this.y += this.speed;
+                if (this.y > sparkleCanvas.height) {
+                    this.y = Math.random() * -20;
+                    this.x = Math.random() * sparkleCanvas.width;
+                }
+            }
+            draw() {
+                sparkleCtx.beginPath();
+                sparkleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                sparkleCtx.fillStyle = this.color;
+                sparkleCtx.globalAlpha = this.opacity;
+                sparkleCtx.fill();
+            }
         }
 
-        function toggleHoliday(checkbox) {
-            let row = checkbox.parentElement.parentElement;
-            let inputs = row.querySelectorAll("input[type='time'], input[type='number']");
-            let overtimeCell = row.querySelector(".overtime");
-            let workingTimeCell = row.querySelector(".totalWorkingTime");
-            let breakTimeInput = row.querySelector(".breakTime");
+        // Create sparkles
+        for (let i = 0; i < 80; i++) {
+            sparkles.push(new Sparkle());
+        }
 
-            if (checkbox.checked) {
-                inputs.forEach(input => input.disabled = true);
-                breakTimeInput.value = "";
-                overtimeCell.textContent = "-";
-                workingTimeCell.textContent = "-";
+        function animateSparkles() {
+            sparkleCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+            sparkles.forEach(sparkle => {
+                sparkle.update();
+                sparkle.draw();
+            });
+            requestAnimationFrame(animateSparkles);
+        }
+        animateSparkles();
+
+        // ===== Intro → Main =====
+        document.getElementById('start-btn').addEventListener('click', () => {
+            const intro = document.getElementById('intro-screen');
+            const main = document.getElementById('main-content');
+            intro.style.opacity = '0';
+            intro.style.visibility = 'hidden';
+            setTimeout(() => {
+                intro.style.display = 'none';
+                main.classList.add('active');
+            }, 800);
+        });
+
+        // ===== Confetti =====
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const confetti = [];
+        const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#06d6a0', '#118ab2'];
+
+        class Confetto {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                this.size = Math.random() * 10 + 5;
+                this.speed = Math.random() * 3 + 2;
+                this.angle = Math.random() * Math.PI * 2;
+                this.rotation = Math.random() * 10;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.5;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.y += this.speed;
+                this.x += Math.sin(this.angle) * 0.5;
+                this.angle += 0.05;
+                this.rotation += this.rotationSpeed;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        function launchConfetti() {
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    confetti.push(new Confetto());
+                }, i * 10);
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            if (confetti.length === 0) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = confetti.length - 1; i >= 0; i--) {
+                confetti[i].update();
+                confetti[i].draw();
+                if (confetti[i].y > canvas.height + 50) {
+                    confetti.splice(i, 1);
+                }
+            }
+            if (confetti.length > 0) requestAnimationFrame(animateConfetti);
+        }
+
+        // ===== Cake Candle Logic =====
+        const flame = document.getElementById('flame');
+        const wishInstruction = document.getElementById('wish-instruction');
+        const blowBtn = document.getElementById('blowBtn');
+
+        // Light candle on click (anywhere on flame area)
+        flame.addEventListener('click', () => {
+            if (!flame.classList.contains('lit')) {
+                flame.classList.add('lit');
+                wishInstruction.innerHTML = "🕯️ Make a wish... then blow it out!";
+                blowBtn.classList.add('show');
+            }
+        });
+
+        // Blow out candle
+        blowBtn.addEventListener('click', () => {
+            flame.classList.remove('lit');
+            wishInstruction.innerHTML = "🎉 You blew it out! Time to cut the cake!";
+            blowBtn.classList.remove('show');
+            setTimeout(() => {
+                launchConfetti(); // Celebrate!
+            }, 300);
+        });
+
+        // ===== Music Toggle =====
+        const musicToggle = document.getElementById('musicToggle');
+        const audio = document.getElementById('birthdaySong');
+
+        musicToggle.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.volume = 0.4;
+                audio.play().then(() => {
+                    musicToggle.innerHTML = '<i class="fas fa-pause"></i> <span>Pause</span>';
+                }).catch(e => {
+                    console.warn("Audio play failed:", e);
+                });
             } else {
-                inputs.forEach(input => input.disabled = false);
-                breakTimeInput.value = "1";
-                calculateTime(row.querySelector(".startTime"));
+                audio.pause();
+                musicToggle.innerHTML = '<i class="fas fa-music"></i> <span>Play Song</span>';
             }
-            updateWorkingDays();
-        }
+        });
 
-        function updateWorkingDays() {
-            let totalDays = document.querySelectorAll(".holidayCheckbox").length;
-            let holidays = document.querySelectorAll(".holidayCheckbox:checked").length;
-            document.getElementById("totalWorkingDays").textContent = totalDays - holidays;
-        }
-
-        function calculateTime(input) {
-            let row = input.parentElement.parentElement;
-            let startTimeInput = row.querySelector(".startTime");
-            let endTimeInput = row.querySelector(".endTime");
-            let breakTimeInput = row.querySelector(".breakTime");
-            let overtimeCell = row.querySelector(".overtime");
-            let workingTimeCell = row.querySelector(".totalWorkingTime");
-
-            // If holiday is checked, no calculations
-            if (row.querySelector(".holidayCheckbox").checked) {
-                overtimeCell.textContent = "-";
-                workingTimeCell.textContent = "-";
-                return;
-            }
-
-            let startTime = startTimeInput.value;
-            let endTime = endTimeInput.value;
-            let breakTime = parseFloat(breakTimeInput.value) || 0;
-
-            if (startTime && endTime) {
-                let start = new Date(`1970-01-01T${startTime}:00Z`);
-                let end = new Date(`1970-01-01T${endTime}:00Z`);
-                let totalWorkingMinutes = (end - start) / 60000 - breakTime * 60;
-
-                if (totalWorkingMinutes < 0) {
-                    totalWorkingMinutes += 24 * 60;  // Account for crossing midnight
-                }
-
-                let totalWorkingTime = (totalWorkingMinutes / 60).toFixed(2);
-                workingTimeCell.textContent = totalWorkingTime;
-
-                let overtime = Math.max(0, totalWorkingMinutes - 480) / 60; // 8 hours = 480 minutes
-                overtimeCell.textContent = overtime.toFixed(2);
-            } else {
-                overtimeCell.textContent = "-";
-                workingTimeCell.textContent = "-";
-            }
-
-            updateTotals();
-        }
-
-        function updateTotals() {
-            let breakTimeCells = document.querySelectorAll(".breakTime");
-            let overtimeCells = document.querySelectorAll(".overtime");
-            let workingTimeCells = document.querySelectorAll(".totalWorkingTime");
-
-            let totalBreakTime = 0;
-            let totalOvertime = 0;
-            let totalWorkingTime = 0;
-
-            breakTimeCells.forEach(cell => {
-                if (!cell.disabled) {
-                    totalBreakTime += parseFloat(cell.value) || 0;
-                }
+        // ===== Gallery Easter Eggs =====
+        document.querySelectorAll('.polaroid').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.add('clicked');
+                const msg = card.getAttribute('data-message');
+                card.querySelector('.hidden-message').textContent = msg;
             });
-
-            overtimeCells.forEach(cell => {
-                if (cell.textContent !== "-") {
-                    totalOvertime += parseFloat(cell.textContent) || 0;
-                }
-            });
-
-            workingTimeCells.forEach(cell => {
-                if (cell.textContent !== "-") {
-                    totalWorkingTime += parseFloat(cell.textContent) || 0;
-                }
-            });
-
-            document.getElementById("totalBreakTime").textContent = totalBreakTime.toFixed(2);
-            document.getElementById("totalOvertime").textContent = totalOvertime.toFixed(2);
-            document.getElementById("totalWorkingTime").textContent = totalWorkingTime.toFixed(2);
-        }
-
-        function copyPreviousRow(checkbox) {
-            let row = checkbox.parentElement.parentElement;
-            let prevRow = row.previousElementSibling;
-            if (!prevRow) return;
-            
-            let prevStart = prevRow.querySelector(".startTime").value;
-            let prevEnd = prevRow.querySelector(".endTime").value;
-            let prevBreak = prevRow.querySelector(".breakTime").value;
-            
-            row.querySelector(".startTime").value = prevStart;
-            row.querySelector(".endTime").value = prevEnd;
-            row.querySelector(".breakTime").value = prevBreak;
-            calculateTime(row.querySelector(".startTime"));
-        }
+        });
     </script>
 </body>
 </html>
