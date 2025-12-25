@@ -39,31 +39,28 @@
         }
 
         /* Intro Screen */
-#intro-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* This adds a semi-transparent gradient over your image */
-    background: linear-gradient(
-        rgba(63, 94, 251, 0.7), 
-        rgba(252, 70, 107, 0.7)
-    ), 
-    url('pexels-asphotography-226737.jpg');
-    
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    z-index: 2000;
-    transition: opacity 0.8s ease, visibility 0.8s;
-}
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(63, 94, 251, 0.7), 
+                rgba(252, 70, 107, 0.7)
+            ), 
+            url('pexels-asphotography-226737.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 2000;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
 
         #intro-screen h1 {
             color: white;
@@ -84,7 +81,7 @@
 
         #start-btn {
             background: var(--primary);
-            color: white;
+            color: rgb(142, 38, 202);
             border: none;
             padding: 16px 40px;
             font-size: 1.4rem;
@@ -151,17 +148,21 @@
 
         .flame {
             position: absolute;
-            top: -40px;
+            top: -20px; /* raised higher */
             left: 50%;
             transform: translateX(-50%) scale(0);
-            width: 20px;
-            height: 30px;
-            background: radial-gradient(circle, #ffeb3b, #ff5722);
+            width: 28px;
+            height: 40px;
+            background: radial-gradient(circle, #fff9c4, #ffeb3b, #ff5722);
             border-radius: 50% 50% 20% 20%;
-            box-shadow: 0 0 15px #ff5722, 0 0 30px #ff9800;
+            box-shadow: 
+                0 0 20px #ff5722,
+                0 0 40px #ff9800,
+                0 0 60px #ffeb3b;
             opacity: 0;
             transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 5;
+            cursor: pointer;
         }
 
         .flame.lit {
@@ -177,10 +178,10 @@
             font-size: 1.2rem;
         }
 
-        /* NEW: Blow instruction text */
+        /* Blow instruction text */
         #blow-instruction {
             margin-top: 10px;
-            color: #e91e63;
+            color: #000000;
             font-weight: bold;
             font-size: 1.1rem;
             opacity: 0;
@@ -189,14 +190,16 @@
             cursor: pointer;
             text-decoration: underline;
         }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
         #blow-instruction.show {
             opacity: 1;
             transform: translateY(0);
-        }
-
-        /* Hide old button */
-        .blow-btn {
-            display: none;
+            animation: blink 1.5s infinite;
         }
 
         /* Confetti Canvas */
@@ -210,7 +213,6 @@
             z-index: 1000;
         }
 
-        /* --- Rest of styles (gallery, etc.) unchanged --- */
         .gallery {
             display: flex;
             flex-wrap: wrap;
@@ -276,7 +278,7 @@
 
         .time-capsule {
             max-width: 700px;
-            margin: 80px auto;
+            margin: 90px auto;
             padding: 40px;
             background: white;
             border-radius: 20px;
@@ -289,7 +291,7 @@
         .time-capsule::before {
             content: '🕰️';
             position: absolute;
-            top: -20px;
+            top: -5px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 2.5rem;
@@ -341,36 +343,19 @@
     <canvas id="sparkle-canvas"></canvas>
 
     <div id="intro-screen">
-        <h1>🎂 A Birthday Surprise Awaits...</h1>
-        <p>Are you ready to explore some of my favorite moments with you?</p>
-        <button id="start-btn">✨ Start Exploring</button>
+        <h1>🎂お誕生日のお祝いに、ささやかなサプライズをご用意いたしました。</h1>
+        <p>共に歩んできた素晴らしい軌跡を、ご一緒に振り返ってみませんか</p>
+        <button id="start-btn">✨ ここをクリック</button>
     </div>
 
     <canvas id="confetti-canvas"></canvas>
 
     <div id="main-content">
         <div class="header">
-            <h1>Happy Birthday!</h1>
-            <p>A little digital hug & a collection of moments I treasure.</p>
+            <h1>お誕生日おめでとうございます</h1>
+            <p>社長のご健康と益々のご多幸を心よりお祈り申し上げます。</p>
         </div>
 
-        <div class="cake-container" id="cakeClickZone">
-            <svg class="cake" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="100" cy="110" rx="90" ry="10" fill="#ccc"/>
-                <rect x="40" y="40" width="120" height="20" fill="#f8bbd0"/>
-                <rect x="45" y="60" width="110" height="20" fill="#e91e63"/>
-                <rect x="50" y="80" width="100" height="20" fill="#ad1457"/>
-                <circle cx="60" cy="35" r="8" fill="#fff"/>
-                <circle cx="100" cy="35" r="8" fill="#fff"/>
-                <circle cx="140" cy="35" r="8" fill="#fff"/>
-            </svg>
-            <div class="flame" id="flame"></div>
-            <p id="wish-instruction">🕯️ Click the cake to light your birthday candle!</p>
-            <!-- NEW: Blow instruction -->
-            <p id="blow-instruction">Touch here to blow out candle!</p>
-        </div>
-
-        <!-- Rest of content unchanged -->
         <div class="gallery">
             <div class="polaroid" style="--angle: -5deg;" data-message="Remember this? You laughed so hard you cried! 😂">
                 <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=600&h=800&q=80" alt="Memory 1">
@@ -395,191 +380,226 @@
         </div>
 
         <div class="time-capsule">
-            <h2>A Note From the Heart</h2>
+            <br>
+            <h2>社員一同より、お誕生日のお祝い</h2>
             <p>
-                Dear You,<br><br>
-                Right now, as you read this, I want you to know: you are deeply loved — not just today, but every ordinary Tuesday, every stormy day, every quiet moment.<br><br>
-                May this year bring you courage to chase joy, rest when you need it, and people who <em>see</em> you.<br><br>
-                With all my heart,<br>
-                — Someone who’s really glad you were born 🌟
+                社長、お誕生日おめでとうございます。 いつも多大なるご指導を賜り、心より感謝申し上げます。
+                社長の揺るぎないビジョンと情熱的なリーダーシップを拝見し、私共も日々背筋が伸びる思いで業務に励んでおります。 
+                新しい一年が、社長にとって、そして弊社にとって更なる飛躍の年となりますよう、社員一同精一杯努めて参る所存です。
+                末筆ながら、社長のご健康と益々のご多幸を心よりお祈り申し上げます。 🌟
             </p>
         </div>
 
         <div class="footer">
-            <p>Made with 🎂, confetti, and way too much love.</p>
+            <p>🎂と紙吹雪、そして溢れんばかりの愛を込めた、バーチャルケーキを贈ります。</p>
         </div>
+
+        <div class="cake-container" id="cakeClickZone">
+        <svg class="cake" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="100" cy="110" rx="90" ry="10" fill="#ccc"/>
+            <rect x="40" y="40" width="120" height="20" fill="#f8bbd0"/>
+            <rect x="45" y="60" width="110" height="20" fill="#e91e63"/>
+            <rect x="50" y="80" width="100" height="20" fill="#ad1457"/>
+            <circle cx="60" cy="35" r="8" fill="#fff"/>
+            <circle cx="100" cy="35" r="8" fill="#fff"/>
+            <circle cx="140" cy="35" r="8" fill="#fff"/>
+        </svg>
+        <div class="flame" id="flame"></div>
+        <p id="wish-instruction">🕯️ バースデーキャンドルに火を灯すために、ケーキをクリックしてください！</p>
+        <p id="blow-instruction">ここをタッチして、キャンドルの火を消してください！</p>
     </div>
 
-<!-- Audio files (LOCAL) -->
- 
-<audio id="introSound" preload="auto">
-    <source src="intro-sound.mp3" type="audio/mpeg">
-</audio>
-<audio id="lightSound" preload="auto">
-    <source src="light-sound.mp3" type="audio/mpeg">
-</audio>
-<!-- We'll remove blowSound unless needed -->
+    </div>
+
+    
+    <!-- Audio Files (Place these in same folder) -->
+    <audio id="introSound" preload="auto">
+        <source src="intro-sound.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="lightSound" preload="auto">
+        <source src="light-sound.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-    // ===== Sparkles & Confetti (same as before) =====
-    // [Keep your existing sparkle & confetti code unchanged]
-
-    // Sparkles
-    const sparkleCanvas = document.getElementById('sparkle-canvas');
-    const sparkleCtx = sparkleCanvas.getContext('2d');
-    sparkleCanvas.width = window.innerWidth;
-    sparkleCanvas.height = window.innerHeight;
-    window.addEventListener('resize', () => {
+    // Wait until DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        // ===== SPARKLES =====
+        const sparkleCanvas = document.getElementById('sparkle-canvas');
+        const sparkleCtx = sparkleCanvas.getContext('2d');
         sparkleCanvas.width = window.innerWidth;
         sparkleCanvas.height = window.innerHeight;
-    });
-    const sparkles = [];
-    const sparkleColors = ['#ffeb3b', '#ffd54f', '#ffca28', '#fff176'];
-    class Sparkle {
-        constructor() {
-            this.x = Math.random() * sparkleCanvas.width;
-            this.y = Math.random() * -sparkleCanvas.height;
-            this.size = Math.random() * 3 + 1;
-            this.speed = Math.random() * 1 + 0.5;
-            this.opacity = Math.random() * 0.7 + 0.3;
-            this.color = sparkleColors[Math.floor(Math.random() * sparkleColors.length)];
-        }
-        update() {
-            this.y += this.speed;
-            if (this.y > sparkleCanvas.height) {
-                this.y = Math.random() * -20;
+
+        window.addEventListener('resize', () => {
+            sparkleCanvas.width = window.innerWidth;
+            sparkleCanvas.height = window.innerHeight;
+        });
+
+        const sparkles = [];
+        const sparkleColors = ['#ffeb3b', '#ffd54f', '#ffca28', '#fff176'];
+
+        class Sparkle {
+            constructor() {
                 this.x = Math.random() * sparkleCanvas.width;
+                this.y = Math.random() * -sparkleCanvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speed = Math.random() * 1 + 0.5;
+                this.opacity = Math.random() * 0.7 + 0.3;
+                this.color = sparkleColors[Math.floor(Math.random() * sparkleColors.length)];
+            }
+            update() {
+                this.y += this.speed;
+                if (this.y > sparkleCanvas.height) {
+                    this.y = Math.random() * -20;
+                    this.x = Math.random() * sparkleCanvas.width;
+                }
+            }
+            draw() {
+                sparkleCtx.beginPath();
+                sparkleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                sparkleCtx.fillStyle = this.color;
+                sparkleCtx.globalAlpha = this.opacity;
+                sparkleCtx.fill();
             }
         }
-        draw() {
-            sparkleCtx.beginPath();
-            sparkleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            sparkleCtx.fillStyle = this.color;
-            sparkleCtx.globalAlpha = this.opacity;
-            sparkleCtx.fill();
-        }
-    }
-    for (let i = 0; i < 80; i++) sparkles.push(new Sparkle());
-    function animateSparkles() {
-        sparkleCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
-        sparkles.forEach(s => { s.update(); s.draw(); });
-        requestAnimationFrame(animateSparkles);
-    }
-    animateSparkles();
 
-    // Confetti
-    const canvas = document.getElementById('confetti-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    window.addEventListener('resize', () => {
+        for (let i = 0; i < 80; i++) sparkles.push(new Sparkle());
+
+        function animateSparkles() {
+            sparkleCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+            sparkles.forEach(s => { s.update(); s.draw(); });
+            requestAnimationFrame(animateSparkles);
+        }
+        window.addEventListener('load', animateSparkles);
+
+        // ===== CONFETTI =====
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-    });
-    const confetti = [];
-    const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#06d6a0', '#118ab2'];
-    class Confetto {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = -20;
-            this.size = Math.random() * 10 + 5;
-            this.speed = Math.random() * 3 + 2;
-            this.angle = Math.random() * Math.PI * 2;
-            this.rotation = Math.random() * 10;
-            this.rotationSpeed = (Math.random() - 0.5) * 0.5;
-            this.color = colors[Math.floor(Math.random() * colors.length)];
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const confetti = [];
+        const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#06d6a0', '#118ab2'];
+
+        class Confetto {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                this.size = Math.random() * 10 + 5;
+                this.speed = Math.random() * 3 + 2;
+                this.angle = Math.random() * Math.PI * 2;
+                this.rotation = Math.random() * 10;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.5;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.y += this.speed;
+                this.x += Math.sin(this.angle) * 0.5;
+                this.angle += 0.05;
+                this.rotation += this.rotationSpeed;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                ctx.restore();
+            }
         }
-        update() {
-            this.y += this.speed;
-            this.x += Math.sin(this.angle) * 0.5;
-            this.angle += 0.05;
-            this.rotation += this.rotationSpeed;
+
+        function launchConfetti() {
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => confetti.push(new Confetto()), i * 10);
+            }
+            animateConfetti();
         }
-        draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.rotation);
-            ctx.fillStyle = this.color;
-            ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
-            ctx.restore();
+
+        function animateConfetti() {
+            if (confetti.length === 0) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = confetti.length - 1; i >= 0; i--) {
+                confetti[i].update();
+                confetti[i].draw();
+                if (confetti[i].y > canvas.height + 50) confetti.splice(i, 1);
+            }
+            if (confetti.length > 0) requestAnimationFrame(animateConfetti);
         }
+
+        // ===== AUDIO & INTERACTION LOGIC =====
+        const startBtn = document.getElementById('start-btn');
+        const introScreen = document.getElementById('intro-screen');
+        const mainContent = document.getElementById('main-content');
+        const introSound = document.getElementById('introSound');
+        const lightSound = document.getElementById('lightSound');
+        const cakeClickZone = document.getElementById('cakeClickZone');
+        const flame = document.getElementById('flame');
+        const wishInstruction = document.getElementById('wish-instruction');
+        const blowInstruction = document.getElementById('blow-instruction');
+
+        // 🔥 CRITICAL: Verify elements exist
+        if (!blowInstruction || !flame) {
+            console.error("Required elements not found in DOM!");
+            return;
+        }
+
+        // 1. Start button
+        startBtn.addEventListener('click', () => {
+            introSound.volume = 0.5;
+            introSound.play().catch(e => console.log("Intro sound failed:", e));
+
+            introScreen.style.opacity = '0';
+            introScreen.style.visibility = 'hidden';
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                mainContent.classList.add('active');
+            }, 800);
+        });
+
+        // 2. Click cake
+        cakeClickZone.addEventListener('click', () => {
+            if (!flame.classList.contains('lit')) {
+                introSound.pause();
+                introSound.currentTime = 0;
+
+                flame.classList.add('lit');
+                wishInstruction.textContent = "🕯️ 願い事をしてください…";
+                blowInstruction.classList.add('show');
+
+                lightSound.volume = 0.4;
+                lightSound.play().catch(e => console.log("Light sound failed:", e));
+            }
+        });
+
+// 3. Blow out candle
+blowInstruction.addEventListener('click', (event) => {
+    event.stopPropagation(); // 👈 PREVENT BUBBLING TO CAKE CONTAINER
+    
+    if (flame.classList.contains('lit')) {
+        introSound.pause();
+        introSound.currentTime = 0;
+        lightSound.pause();
+        lightSound.currentTime = 0;
+
+        flame.classList.remove('lit');
+
+        wishInstruction.innerHTML = "🎉 願いが叶いますように！";
+        blowInstruction.classList.remove('show');
+
+        setTimeout(launchConfetti, 200);
     }
-    function launchConfetti() {
-        for (let i = 0; i < 150; i++) {
-            setTimeout(() => confetti.push(new Confetto()), i * 10);
-        }
-        animateConfetti();
-    }
-    function animateConfetti() {
-        if (confetti.length === 0) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = confetti.length - 1; i >= 0; i--) {
-            confetti[i].update();
-            confetti[i].draw();
-            if (confetti[i].y > canvas.height + 50) confetti.splice(i, 1);
-        }
-        if (confetti.length > 0) requestAnimationFrame(animateConfetti);
-    }
+});
 
-    // ===== Audio & Interaction Logic =====
-    const startBtn = document.getElementById('start-btn');
-    const introScreen = document.getElementById('intro-screen');
-    const mainContent = document.getElementById('main-content');
-    const introSound = document.getElementById('introSound');
-    const lightSound = document.getElementById('lightSound'); // NEW
-    const cakeClickZone = document.getElementById('cakeClickZone');
-    const flame = document.getElementById('flame');
-    const wishInstruction = document.getElementById('wish-instruction');
-    const blowInstruction = document.getElementById('blow-instruction');
-
-    // 1. On "Start" click → play intro sound + show main
-    startBtn.addEventListener('click', () => {
-        // ✅ Play intro sound (first allowed user interaction)
-        introSound.volume = 0.5;
-        introSound.play().catch(e => console.log("Intro sound failed:", e));
-
-        introScreen.style.opacity = '0';
-        introScreen.style.visibility = 'hidden';
-        setTimeout(() => {
-            introScreen.style.display = 'none';
-            mainContent.classList.add('active');
-        }, 800);
-    });
-
-    // 2. Click cake → light candle + play LIGHTING sound
-    cakeClickZone.addEventListener('click', () => {
-        if (!flame.classList.contains('lit')) {
-            flame.classList.add('lit');
-            wishInstruction.textContent = "🕯️ Make a wish...";
-            blowInstruction.classList.add('show');
-
-            // ✅ Play "lighting" sound
-            lightSound.volume = 0.4;
-            lightSound.play().catch(e => console.log("Light sound failed:", e));
-        }
-    });
-
-    // 3. Blow out candle (no sound, or add one if desired)
-    blowInstruction.addEventListener('click', () => {
-        if (flame.classList.contains('lit')) {
-            // 🔇 Stop intro sound (optional)
-            introSound.pause();
-            introSound.currentTime = 0;
-
-            flame.classList.remove('lit');
-            wishInstruction.innerHTML = "🎉 Your wish is on its way!";
-            blowInstruction.classList.remove('show');
-
-            // (Optional: play a soft "blow" sound here if you want)
-            setTimeout(launchConfetti, 200);
-        }
-    });
-
-    // Gallery
-    document.querySelectorAll('.polaroid').forEach(card => {
-        card.addEventListener('click', () => {
-            card.classList.add('clicked');
-            card.querySelector('.hidden-message').textContent = card.dataset.message;
+        // Gallery
+        document.querySelectorAll('.polaroid').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.add('clicked');
+                card.querySelector('.hidden-message').textContent = card.dataset.message;
+            });
         });
     });
 </script>

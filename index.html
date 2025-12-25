@@ -59,7 +59,7 @@
             align-items: center;
             text-align: center;
             z-index: 2000;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            transition: opacity 0.7s ease, visibility 0.1s;
         }
 
         #intro-screen h1 {
@@ -148,7 +148,7 @@
 
         .flame {
             position: absolute;
-            top: -20px; /* raised higher */
+            top: -20px;
             left: 50%;
             transform: translateX(-50%) scale(0);
             width: 28px;
@@ -178,7 +178,6 @@
             font-size: 1.2rem;
         }
 
-        /* Blow instruction text */
         #blow-instruction {
             margin-top: 10px;
             color: #000000;
@@ -202,7 +201,6 @@
             animation: blink 1.5s infinite;
         }
 
-        /* Confetti Canvas */
         #confetti-canvas {
             position: fixed;
             top: 0;
@@ -316,7 +314,6 @@
             padding-bottom: 30px;
         }
 
-        /* Animations */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -358,12 +355,12 @@
 
         <div class="gallery">
             <div class="polaroid" style="--angle: -5deg;" data-message="Remember this? You laughed so hard you cried! 😂">
-                <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=600&h=800&q=80" alt="Memory 1">
+                <img src="1.JPG" alt="Memory 1">
                 <p class="caption">The best day ever!</p>
                 <div class="hidden-message"></div>
             </div>
             <div class="polaroid" style="--angle: 3deg;" data-message="You said 'Let’s just go!' — best decision ever. 🌍">
-                <img src="https://images.unsplash.com/photo-1476820865390-c52aeebb9891?auto=format&fit=crop&w=600&h=800&q=80" alt="Memory 2">
+                <img src="2.png" alt="Memory 2">
                 <p class="caption">Adventure awaits.</p>
                 <div class="hidden-message"></div>
             </div>
@@ -395,33 +392,38 @@
         </div>
 
         <div class="cake-container" id="cakeClickZone">
-        <svg class="cake" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="100" cy="110" rx="90" ry="10" fill="#ccc"/>
-            <rect x="40" y="40" width="120" height="20" fill="#f8bbd0"/>
-            <rect x="45" y="60" width="110" height="20" fill="#e91e63"/>
-            <rect x="50" y="80" width="100" height="20" fill="#ad1457"/>
-            <circle cx="60" cy="35" r="8" fill="#fff"/>
-            <circle cx="100" cy="35" r="8" fill="#fff"/>
-            <circle cx="140" cy="35" r="8" fill="#fff"/>
-        </svg>
-        <div class="flame" id="flame"></div>
-        <p id="wish-instruction">🕯️ バースデーキャンドルに火を灯すために、ケーキをクリックしてください！</p>
-        <p id="blow-instruction">ここをタッチして、キャンドルの火を消してください！</p>
+            <svg class="cake" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="100" cy="110" rx="90" ry="10" fill="#ccc"/>
+                <rect x="40" y="40" width="120" height="20" fill="#f8bbd0"/>
+                <rect x="45" y="60" width="110" height="20" fill="#e91e63"/>
+                <rect x="50" y="80" width="100" height="20" fill="#ad1457"/>
+                <circle cx="60" cy="35" r="8" fill="#fff"/>
+                <circle cx="100" cy="35" r="8" fill="#fff"/>
+                <circle cx="140" cy="35" r="8" fill="#fff"/>
+            </svg>
+            <div class="flame" id="flame"></div>
+            <p id="wish-instruction">🕯️ バースデーキャンドルに火を灯すために、ケーキをクリックしてください！</p>
+            <p id="blow-instruction">ここをタッチして、キャンドルの火を消してください！</p>
+            <p id="countdown" style="font-size: 1.5rem; font-weight: bold; color: #e91e63; margin-top: 10px; display: none;"></p>
+        </div>
     </div>
 
-    </div>
-
+<div id="video-container" style="display: none; text-align: center; margin: 30px auto; max-width: 600px;">
+    <video id="celebrationVideo" width="100%" controls style="border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+        <source src="video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <p style="margin-top: 15px; font-size: 1.2rem;">🎉 おめでとうございます！素敵な一年になりますように！</p>
+</div>
     
-    <!-- Audio Files (Place these in same folder) -->
     <audio id="introSound" preload="auto">
-        <source src="intro-sound.mp3" type="audio/mpeg">
+        <source src="1111.mp3" type="audio/mpeg">
     </audio>
     <audio id="lightSound" preload="auto">
         <source src="light-sound.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-    // Wait until DOM is fully loaded
     document.addEventListener('DOMContentLoaded', () => {
         // ===== SPARKLES =====
         const sparkleCanvas = document.getElementById('sparkle-canvas');
@@ -530,7 +532,7 @@
             if (confetti.length > 0) requestAnimationFrame(animateConfetti);
         }
 
-        // ===== AUDIO & INTERACTION LOGIC =====
+        // ===== INTERACTION LOGIC =====
         const startBtn = document.getElementById('start-btn');
         const introScreen = document.getElementById('intro-screen');
         const mainContent = document.getElementById('main-content');
@@ -540,18 +542,11 @@
         const flame = document.getElementById('flame');
         const wishInstruction = document.getElementById('wish-instruction');
         const blowInstruction = document.getElementById('blow-instruction');
+        let timer = null;
 
-        // 🔥 CRITICAL: Verify elements exist
-        if (!blowInstruction || !flame) {
-            console.error("Required elements not found in DOM!");
-            return;
-        }
-
-        // 1. Start button
         startBtn.addEventListener('click', () => {
             introSound.volume = 0.5;
             introSound.play().catch(e => console.log("Intro sound failed:", e));
-
             introScreen.style.opacity = '0';
             introScreen.style.visibility = 'hidden';
             setTimeout(() => {
@@ -560,46 +555,52 @@
             }, 800);
         });
 
-        // 2. Click cake
         cakeClickZone.addEventListener('click', () => {
             if (!flame.classList.contains('lit')) {
                 introSound.pause();
                 introSound.currentTime = 0;
-
                 flame.classList.add('lit');
                 wishInstruction.textContent = "🕯️ 願い事をしてください…";
-                blowInstruction.classList.add('show');
-
+                blowInstruction.classList.remove('show');
+                const countdownEl = document.getElementById('countdown');
+                countdownEl.style.display = 'block';
+                let count = 5;
+                countdownEl.textContent = count;
+                if (timer) clearInterval(timer);
+                timer = setInterval(() => {
+                    count--;
+                    if (count >= 0) countdownEl.textContent = count;
+                    if (count <= 0) {
+                        clearInterval(timer);
+                        countdownEl.style.display = 'none';
+                        blowInstruction.classList.add('show');
+                    }
+                }, 1000);
                 lightSound.volume = 0.4;
                 lightSound.play().catch(e => console.log("Light sound failed:", e));
             }
         });
 
-// 3. Blow out candle
-blowInstruction.addEventListener('click', (event) => {
-    event.stopPropagation(); // 👈 PREVENT BUBBLING TO CAKE CONTAINER
-    
-    if (flame.classList.contains('lit')) {
-        introSound.pause();
-        introSound.currentTime = 0;
-        lightSound.pause();
-        lightSound.currentTime = 0;
-
-        flame.classList.remove('lit');
-
-        wishInstruction.innerHTML = "🎉 願いが叶いますように！";
-        blowInstruction.classList.remove('show');
-
-        setTimeout(launchConfetti, 200);
-    }
-});
-
-        // Gallery
-        document.querySelectorAll('.polaroid').forEach(card => {
-            card.addEventListener('click', () => {
-                card.classList.add('clicked');
-                card.querySelector('.hidden-message').textContent = card.dataset.message;
-            });
+        blowInstruction.addEventListener('click', (event) => {
+            event.stopPropagation();
+            if (flame.classList.contains('lit')) {
+                introSound.pause();
+                introSound.currentTime = 0;
+                lightSound.pause();
+                lightSound.currentTime = 0;
+                document.getElementById('cakeClickZone').style.display = 'none';
+                const videoContainer = document.getElementById('video-container');
+                const iframe = document.getElementById('celebrationVideo');
+                // ✅ CORRECT YOUTUBE URL — NO SPACES!
+                
+                const video = document.getElementById('celebrationVideo');
+                videoContainer.style.display = 'block';
+                video.play(); // This will start the local video
+                
+                videoContainer.style.display = 'block';
+                wishInstruction.innerHTML = "";
+                setTimeout(launchConfetti, 200);
+            }
         });
     });
 </script>
