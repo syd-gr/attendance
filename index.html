@@ -38,14 +38,14 @@
             z-index: 10;
         }
 
-        /* ===== Intro Screen ===== */
+        /* Intro Screen */
         #intro-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1511739001183-379328b2a7a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            background: radial-gradient(circle, #3F5EFB 0%, #fc466b 90%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -92,7 +92,7 @@
             background: #ff5252;
         }
 
-        /* ===== Main Content ===== */
+        /* Main Content */
         #main-content {
             opacity: 0;
             visibility: hidden;
@@ -124,26 +124,13 @@
             margin-bottom: 25px;
         }
 
-        .music-toggle {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: 0.3s;
-        }
-        .music-toggle:hover { transform: scale(1.05); }
-
-        /* ===== Cake with Candle ===== */
+        /* Cake with Candle */
         .cake-container {
             text-align: center;
             margin: 30px auto;
             position: relative;
             max-width: 400px;
+            cursor: pointer; /* Make whole cake clickable */
         }
 
         .cake {
@@ -164,7 +151,6 @@
             box-shadow: 0 0 15px #ff5722, 0 0 30px #ff9800;
             opacity: 0;
             transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none;
             z-index: 5;
         }
 
@@ -203,7 +189,7 @@
             transform: scale(1.05);
         }
 
-        /* ===== Confetti Canvas ===== */
+        /* Confetti Canvas */
         #confetti-canvas {
             position: fixed;
             top: 0;
@@ -214,7 +200,7 @@
             z-index: 1000;
         }
 
-        /* Rest of your styles (gallery, time-capsule, etc.) stay the same */
+        /* Gallery, time-capsule, etc. — unchanged, but cleaned image URLs */
         .gallery {
             display: flex;
             flex-wrap: wrap;
@@ -342,50 +328,37 @@
     </style>
 </head>
 <body>
-    <!-- Sparkle Canvas (always on top) -->
     <canvas id="sparkle-canvas"></canvas>
 
-    <!-- Intro Screen -->
     <div id="intro-screen">
         <h1>🎂 A Birthday Surprise Awaits...</h1>
         <p>Are you ready to explore some of my favorite moments with you?</p>
         <button id="start-btn">✨ Start Exploring</button>
     </div>
 
-    <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Main Content -->
     <div id="main-content">
         <div class="header">
             <h1>Happy Birthday!</h1>
             <p>A little digital hug & a collection of moments I treasure.</p>
-            <div class="music-toggle" id="musicToggle">
-                <i class="fas fa-music"></i> <span>Play Song</span>
-            </div>
         </div>
 
-        <!-- Cake with Candle -->
-        <div class="cake-container">
-            <!-- Simple SVG Cake -->
+        <div class="cake-container" id="cakeClickZone">
             <svg class="cake" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                <!-- Plate -->
                 <ellipse cx="100" cy="110" rx="90" ry="10" fill="#ccc"/>
-                <!-- Cake layers -->
                 <rect x="40" y="40" width="120" height="20" fill="#f8bbd0"/>
                 <rect x="45" y="60" width="110" height="20" fill="#e91e63"/>
                 <rect x="50" y="80" width="100" height="20" fill="#ad1457"/>
-                <!-- Frosting swirls -->
                 <circle cx="60" cy="35" r="8" fill="#fff"/>
                 <circle cx="100" cy="35" r="8" fill="#fff"/>
                 <circle cx="140" cy="35" r="8" fill="#fff"/>
             </svg>
             <div class="flame" id="flame"></div>
-            <p id="wish-instruction">🕯️ Click the flame to light your birthday candle!</p>
+            <p id="wish-instruction">🕯️ Click the cake to light your birthday candle!</p>
             <button class="blow-btn" id="blowBtn">💨 Blow Out Candle</button>
         </div>
 
-        <!-- Rest of your content -->
         <div class="gallery">
             <div class="polaroid" style="--angle: -5deg;" data-message="Remember this? You laughed so hard you cried! 😂">
                 <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=600&h=800&q=80" alt="Memory 1">
@@ -425,27 +398,25 @@
         </div>
     </div>
 
-    <!-- Royalty-Free Birthday Song -->
-    <audio id="birthdaySong" preload="metadata">
-        <source src="https://assets.mixkit.co/music/preview/mixkit-happy-birthday-to-you-513.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
+    <!-- LOCAL AUDIO FILE -->
+    <audio id="birthdaySong" preload="auto">
+        <source src="audio.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // ===== Sparkling Particles (Falling from Top) =====
+        // Sparkles, Confetti, Gallery — same as before (unchanged logic)
+
+        // ===== Sparkling Particles =====
         const sparkleCanvas = document.getElementById('sparkle-canvas');
         const sparkleCtx = sparkleCanvas.getContext('2d');
         sparkleCanvas.width = window.innerWidth;
         sparkleCanvas.height = window.innerHeight;
-
         window.addEventListener('resize', () => {
             sparkleCanvas.width = window.innerWidth;
             sparkleCanvas.height = window.innerHeight;
         });
-
         const sparkles = [];
         const sparkleColors = ['#ffeb3b', '#ffd54f', '#ffca28', '#fff176'];
-
         class Sparkle {
             constructor() {
                 this.x = Math.random() * sparkleCanvas.width;
@@ -470,48 +441,25 @@
                 sparkleCtx.fill();
             }
         }
-
-        // Create sparkles
-        for (let i = 0; i < 80; i++) {
-            sparkles.push(new Sparkle());
-        }
-
+        for (let i = 0; i < 80; i++) sparkles.push(new Sparkle());
         function animateSparkles() {
             sparkleCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
-            sparkles.forEach(sparkle => {
-                sparkle.update();
-                sparkle.draw();
-            });
+            sparkles.forEach(s => { s.update(); s.draw(); });
             requestAnimationFrame(animateSparkles);
         }
         animateSparkles();
 
-        // ===== Intro → Main =====
-        document.getElementById('start-btn').addEventListener('click', () => {
-            const intro = document.getElementById('intro-screen');
-            const main = document.getElementById('main-content');
-            intro.style.opacity = '0';
-            intro.style.visibility = 'hidden';
-            setTimeout(() => {
-                intro.style.display = 'none';
-                main.classList.add('active');
-            }, 800);
-        });
-
-        // ===== Confetti =====
+        // ===== Confetti Engine =====
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
-
         const confetti = [];
         const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#06d6a0', '#118ab2'];
-
         class Confetto {
             constructor() {
                 this.x = Math.random() * canvas.width;
@@ -538,77 +486,67 @@
                 ctx.restore();
             }
         }
-
         function launchConfetti() {
             for (let i = 0; i < 150; i++) {
-                setTimeout(() => {
-                    confetti.push(new Confetto());
-                }, i * 10);
+                setTimeout(() => confetti.push(new Confetto()), i * 10);
             }
             animateConfetti();
         }
-
         function animateConfetti() {
             if (confetti.length === 0) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (let i = confetti.length - 1; i >= 0; i--) {
                 confetti[i].update();
                 confetti[i].draw();
-                if (confetti[i].y > canvas.height + 50) {
-                    confetti.splice(i, 1);
-                }
+                if (confetti[i].y > canvas.height + 50) confetti.splice(i, 1);
             }
             if (confetti.length > 0) requestAnimationFrame(animateConfetti);
         }
 
-        // ===== Cake Candle Logic =====
+        // ===== MAIN LOGIC =====
+        const startBtn = document.getElementById('start-btn');
+        const introScreen = document.getElementById('intro-screen');
+        const mainContent = document.getElementById('main-content');
+        const audio = document.getElementById('birthdaySong');
+        const cakeClickZone = document.getElementById('cakeClickZone');
         const flame = document.getElementById('flame');
         const wishInstruction = document.getElementById('wish-instruction');
         const blowBtn = document.getElementById('blowBtn');
 
-        // Light candle on click (anywhere on flame area)
-        flame.addEventListener('click', () => {
+        startBtn.addEventListener('click', () => {
+            introScreen.style.opacity = '0';
+            introScreen.style.visibility = 'hidden';
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                mainContent.classList.add('active');
+                
+                // ✅ AUTO-PLAY MUSIC AFTER USER INTERACTION
+                audio.volume = 0.4;
+                audio.play().catch(e => console.warn("Auto-play failed:", e));
+            }, 800);
+        });
+
+        // ✅ CLICK CAKE TO LIGHT CANDLE
+        cakeClickZone.addEventListener('click', () => {
             if (!flame.classList.contains('lit')) {
                 flame.classList.add('lit');
-                wishInstruction.innerHTML = "🕯️ Make a wish... then blow it out!";
+                wishInstruction.textContent = "🕯️ Make a wish... then blow it out!";
                 blowBtn.classList.add('show');
             }
         });
 
-        // Blow out candle
         blowBtn.addEventListener('click', () => {
             flame.classList.remove('lit');
             wishInstruction.innerHTML = "🎉 You blew it out! Time to cut the cake!";
             blowBtn.classList.remove('show');
-            setTimeout(() => {
-                launchConfetti(); // Celebrate!
-            }, 300);
+            setTimeout(launchConfetti, 300);
         });
 
-        // ===== Music Toggle =====
-        const musicToggle = document.getElementById('musicToggle');
-        const audio = document.getElementById('birthdaySong');
-
-        musicToggle.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.volume = 0.4;
-                audio.play().then(() => {
-                    musicToggle.innerHTML = '<i class="fas fa-pause"></i> <span>Pause</span>';
-                }).catch(e => {
-                    console.warn("Audio play failed:", e);
-                });
-            } else {
-                audio.pause();
-                musicToggle.innerHTML = '<i class="fas fa-music"></i> <span>Play Song</span>';
-            }
-        });
-
-        // ===== Gallery Easter Eggs =====
+        // Gallery
         document.querySelectorAll('.polaroid').forEach(card => {
             card.addEventListener('click', () => {
                 card.classList.add('clicked');
-                const msg = card.getAttribute('data-message');
-                card.querySelector('.hidden-message').textContent = msg;
+                card.querySelector('.hidden-message').textContent = card.dataset.message;
             });
         });
     </script>
