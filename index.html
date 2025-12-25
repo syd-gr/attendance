@@ -343,17 +343,17 @@
     <canvas id="sparkle-canvas"></canvas>
 
     <div id="intro-screen">
-        <h1>🎂 A Birthday Surprise Awaits...</h1>
-        <p>Are you ready to explore some of my favorite moments with you?</p>
-        <button id="start-btn">✨ Start Exploring</button>
+        <h1>🎂お誕生日のお祝いに、ささやかなサプライズをご用意いたしました。</h1>
+        <p>共に歩んできた素晴らしい軌跡を、ご一緒に振り返ってみませんか</p>
+        <button id="start-btn">✨ ここをクリック</button>
     </div>
 
     <canvas id="confetti-canvas"></canvas>
 
     <div id="main-content">
         <div class="header">
-            <h1>Happy Birthday!</h1>
-            <p>A little digital hug & a collection of moments I treasure.</p>
+            <h1>お誕生日おめでとうございます</h1>
+            <p>社長のご健康と益々のご多幸を心よりお祈り申し上げます。</p>
         </div>
 
         <div class="gallery">
@@ -380,18 +380,18 @@
         </div>
 
         <div class="time-capsule">
-            <h2>A Note From the Heart</h2>
+            <br>
+            <h2>社員一同より、お誕生日のお祝い</h2>
             <p>
-                Dear You,<br><br>
-                Right now, as you read this, I want you to know: you are deeply loved — not just today, but every ordinary Tuesday, every stormy day, every quiet moment.<br><br>
-                May this year bring you courage to chase joy, rest when you need it, and people who <em>see</em> you.<br><br>
-                With all my heart,<br>
-                — Someone who’s really glad you were born 🌟
+                社長、お誕生日おめでとうございます。 いつも多大なるご指導を賜り、心より感謝申し上げます。
+                社長の揺るぎないビジョンと情熱的なリーダーシップを拝見し、私共も日々背筋が伸びる思いで業務に励んでおります。 
+                新しい一年が、社長にとって、そして弊社にとって更なる飛躍の年となりますよう、社員一同精一杯努めて参る所存です。
+                末筆ながら、社長のご健康と益々のご多幸を心よりお祈り申し上げます。 🌟
             </p>
         </div>
 
         <div class="footer">
-            <p>Made with 🎂, confetti, and way too much love.</p>
+            <p>🎂と紙吹雪、そして溢れんばかりの愛を込めた、バーチャルケーキを贈ります。</p>
         </div>
 
         <div class="cake-container" id="cakeClickZone">
@@ -405,8 +405,8 @@
             <circle cx="140" cy="35" r="8" fill="#fff"/>
         </svg>
         <div class="flame" id="flame"></div>
-        <p id="wish-instruction">🕯️ Click the cake to light your birthday candle!</p>
-        <p id="blow-instruction">Touch here to blow out candle!</p>
+        <p id="wish-instruction">🕯️ バースデーキャンドルに火を灯すために、ケーキをクリックしてください！</p>
+        <p id="blow-instruction">ここをタッチして、キャンドルの火を消してください！</p>
     </div>
 
     </div>
@@ -567,7 +567,7 @@
                 introSound.currentTime = 0;
 
                 flame.classList.add('lit');
-                wishInstruction.textContent = "🕯️ Make a wish...";
+                wishInstruction.textContent = "🕯️ 願い事をしてください…";
                 blowInstruction.classList.add('show');
 
                 lightSound.volume = 0.4;
@@ -587,7 +587,7 @@ blowInstruction.addEventListener('click', (event) => {
 
         flame.classList.remove('lit');
 
-        wishInstruction.innerHTML = "🎉 Your wish is on its way!";
+        wishInstruction.innerHTML = "🎉 願いが叶いますように！";
         blowInstruction.classList.remove('show');
 
         setTimeout(launchConfetti, 200);
